@@ -1,0 +1,209 @@
+# Example KiPlot config file
+kibot:
+  version: 1
+
+global:
+  date_format: "%Y%m%d"
+  time_format: "%H%M"
+  # Note: date_time_format uses time from design files, not system time
+  #     We want system time - timestamp of fabpack export
+
+preflight:
+  run_erc: false
+  update_xml: false
+  run_drc: false
+  check_zone_fills: false
+  ignore_unconnected: false
+
+outputs:
+  # Exports PDF print of schematic
+  - name: 'pdf_sch'
+    comment: 'Print schematic (PDF)'
+    type: 'pdf_sch_print'
+    dir: 'pdf/'
+    options:
+      output: '%p_schematic.pdf'
+
+  # Exports PDF print of front gerber layers (for footprint verification)
+  - name: 'pdf_pcb_front'
+    comment: "Print frontside footprint verification"
+    type: pdf_pcb_print
+    dir: pdf/
+    options:
+      output_name: '%p_PCB_Top.pdf'
+    layers:
+      - layer: F.Cu
+      - layer: F.SilkS
+      - layer: Edge.Cuts
+
+  # Exports PDF print of back gerber layers (for footprint verification)
+  - name: 'pdf_pcb_back'
+    comment: "Print backside footprint verification"
+    type: pdf_pcb_print
+    dir: pdf/
+    options:
+      output_name: '%p_PCB_Bottom.pdf'
+    layers:
+      - layer: B.Cu
+      - layer: B.SilkS
+      - layer: Edge.Cuts
+
+  # Exports PDF print of back assembly layers (for fab house)
+  - name: 'pdf_asm_drawing_back'
+    comment: "Print Back Assembly Drawing"
+    type: pdf_pcb_print
+    dir: fab/draw
+    options:
+      output_name: '%p_assembly_Bottom.pdf'
+    layers:
+      - layer: B.Fab
+      - layer: B.CrtYd
+      - layer: Edge.Cuts
+      - layer: User.Drawings
+      - layer: User.Comments
+
+  # Exports PDF print of front assembly layers (for fab house)
+  - name: 'pdf_asm_drawing_front'
+    comment: "Print Front Assembly Drawing"
+    type: pdf_pcb_print
+    dir: fab/draw
+    options:
+      output_name: '%p_assembly_Front.pdf'
+    layers:
+      - layer: F.Fab
+      - layer: F.CrtYd
+      - layer: Edge.Cuts
+      - layer: User.Drawings
+      - layer: User.Comments
+
+  # Exports gerbers 
+  - name: 'gerbers'
+    comment: "Generate gerbers"
+    type: gerber
+    dir: fab/pcb/gerber
+    options:
+      # generic layer options
+      exclude_edge_layer: true
+      exclude_pads_from_silkscreen: false
+      use_aux_axis_as_origin: false
+      plot_sheet_reference: false
+      plot_footprint_refs: true
+      plot_footprint_values: true
+      force_plot_invisible_refs_vals: false
+      tent_vias: true
+
+      # gerber options
+      line_width: 0.1
+      subtract_mask_from_silk: false
+      use_protel_extensions: false
+      gerber_precision: 4.6
+      create_gerber_job_file: true
+      use_gerber_x2_attributes: true
+      use_gerber_net_attributes: true
+
+    layers:
+      - 'copper'
+      - 'technical'
+      - layer: Edge.Cuts
+        suffix: Edge_Cuts
+
+  # Exports drill files 
+  - name: 'drill'
+    comment: "Generate drill files"
+    type: gerb_drill
+    dir: fab/pcb/gerber
+
+  # Exports gencad file (used by some vendors' PNP lines)
+  - name: 'gencad'
+    comment: "Exports GenCAD 1.4 file"
+    type: gencad
+    dir: fab/asm/gencad
+    options:
+      output: '%p_gencad.%x'
+
+  # Exports pick-and-place file 
+  - name: 'pnp'
+    comment: "Generates pick'n'place cmpt positions"
+    type: position
+    dir: fab/asm/pnp
+    options:
+      output: '%i_%p.csv'
+
+  # Exports interactive HTML bom
+  #  - name: 'ibom'
+  #    comment: "Generate Interactive HTML BOM"
+  #    type: ibom
+  #    dir: fab/asm/bom
+  #    options:
+  #      output: 'bom_interactive_%p.html'
+
+  # Exports individual BOM
+  - name: 'bom_ind'
+    comment: "Generate Individual BOM (one cmpt per line)"
+    type: bom
+    dir: fab/asm/bom
+    options:
+      output: 'bom_indiv_%p.csv'
+      group_fields: ['Reference']
+      columns:  
+        - field: 'References'
+          name: 'RefDes'
+        - field: 'Value'
+          name: 'Value'
+        - field: 'Pop'
+          name: 'Pop'
+        - field: 'Mfg'
+          name: 'Mfg'
+        - field: 'MfgPN'
+          name: 'MfgPN'
+        - field: 'Dist'
+          name: 'Dist'
+        - field: 'DistPN'
+          name: 'DistPN'
+        - field: 'Footprint'
+          name: 'Footprint'
+      csv:
+        hide_pcb_info: true
+        hide_stats_info: true
+
+  # Exports collated BOM
+  - name: 'bom_col'
+    comment: "Generate Collated BOM (grouped by MfgPN)"
+    type: bom
+    dir: fab/asm/bom
+    options:
+      output: 'bom_collate_%p.csv'
+      fit_field: 'Pop'
+      columns: ['References', 'Quantity Per PCB', 'Value', 'Mfg', 'MfgPN', 'Dist', 'DistPN', 'Datasheet']
+      csv:
+        hide_pcb_info: true
+        hide_stats_info: true
+
+  # Zips files required for quoting turnkey PCB assembly
+  - name: 'zip_asm'
+    dir: fab/
+    comment: "Creates fab pack - turnkey PCB mfg"
+    type: compress
+    options:
+      output: '../releases/staging/fabpack_%p_turnkey_%D_%T.zip'
+      files: 
+        - from_output: bom_col
+        - from_output: bom_ind
+        - from_output: pnp
+        - from_output: gencad
+        - from_output: gerbers
+        - from_output: drill
+        - from_output: pdf_asm_drawing_front
+        - from_output: pdf_asm_drawing_back
+
+  # Zips files required for quoting bare PCB fabrication
+  - name: 'zip_pcb'
+    dir: fab/
+    comment: "Creates fab pack - bare board only"
+    type: compress
+    options:
+      output: '../releases/staging/fabpack_%p_bareboard_%D_%T.zip'
+      files: 
+        - from_output: gerbers
+        - from_output: drill
+
