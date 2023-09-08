@@ -181,11 +181,11 @@ outputs:
 
   # Zips files required for quoting turnkey PCB assembly
   - name: 'zip_asm'
-    dir: fab/
+    dir: releases/staging/
     comment: "Creates fab pack - turnkey PCB mfg"
     type: compress
     options:
-      output: '../releases/staging/fabpack_%p_turnkey_%D_%T.zip'
+      output: 'fabpack_%p_turnkey_%D_%T.zip'
       files: 
         - from_output: bom_col
         - from_output: bom_ind
@@ -198,11 +198,11 @@ outputs:
 
   # Zips files required for quoting bare PCB fabrication
   - name: 'zip_pcb'
-    dir: fab/
+    dir: releases/staging/
     comment: "Creates fab pack - bare board only"
     type: compress
     options:
-      output: '../releases/staging/fabpack_%p_bareboard_%D_%T.zip'
+      output: 'fabpack_%p_bareboard_%D_%T.zip'
       files: 
         - from_output: gerbers
         - from_output: drill
