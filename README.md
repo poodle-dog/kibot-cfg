@@ -4,7 +4,7 @@ A cfg.yaml file for structuring Kibot fab pack exports.
 
 # How do I install this?
 
-Just symlink to the config file in whatever Kicad repo you're working in. 
+Once you've cloned the repo, just symlink to the config file in whatever Kicad repo you're working in. 
 
 Clone the repo to your local machine, and in any kicad directory, run:
 
