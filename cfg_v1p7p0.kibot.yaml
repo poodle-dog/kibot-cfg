@@ -140,12 +140,12 @@ outputs:
     dir: fab/pcb/gerber
 
   # Exports gencad file (used by some vendors' PNP lines)
-  - name: 'gencad'
-    comment: "Exports GenCAD 1.4 file"
-    type: gencad
-    dir: fab/asm/gencad
-    options:
-      output: '%p_gencad.%x'
+  #- name: 'gencad'
+  # comment: "Exports GenCAD 1.4 file"
+  # type: gencad
+  # dir: fab/asm/gencad
+  # options:
+  #   output: '%p_gencad.%x'
 
   # Exports pick-and-place file 
   - name: 'pnp'
@@ -153,15 +153,8 @@ outputs:
     type: position
     dir: fab/asm/pnp
     options:
+      format: 'CSV'
       output: '%i_%p.csv'
-
-  # Exports interactive HTML bom
-  #  - name: 'ibom'
-  #    comment: "Generate Interactive HTML BOM"
-  #    type: ibom
-  #    dir: fab/asm/bom
-  #    options:
-  #      output: 'bom_interactive_%p.html'
 
   # Exports individual BOM
   - name: 'bom_ind'
@@ -216,7 +209,7 @@ outputs:
         - from_output: bom_col
         - from_output: bom_ind
         - from_output: pnp
-        - from_output: gencad
+        #- from_output: gencad
         - from_output: gerbers
         - from_output: drill
         - from_output: pdf_asm_drawing_front
