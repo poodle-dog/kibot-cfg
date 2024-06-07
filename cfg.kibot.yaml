@@ -27,54 +27,80 @@ outputs:
   # Exports PDF print of front gerber layers (for footprint verification)
   - name: 'pdf_pcb_front'
     comment: "Print frontside footprint verification"
-    type: pdf_pcb_print
+    type: pcb_print
     dir: pdf/
     options:
-      output_name: '%p_PCB_Top.pdf'
-    layers:
-      - layer: F.Cu
-      - layer: F.SilkS
-      - layer: Edge.Cuts
+      output: '%p_PCB_Top.pdf'
+      format: 'PDF'
+      pages:
+      - layers:
+          - layer: "F.Cu"
+            description: "Front Copper Layer"
+            color: "#00FF00FF"  # Example color with alpha
+          - layer: "F.SilkS"
+            description: "Front Silkscreen Layer"
+            color: "#FFFFFF"    # Example color
+          - layer: "Edge.Cuts"
+            description: "Edge Cuts Layer"
+            color: "#000000FF"  # Example color with alpha
+        scaling: 1.0
+        sort_layers: true
 
   # Exports PDF print of back gerber layers (for footprint verification)
   - name: 'pdf_pcb_back'
     comment: "Print backside footprint verification"
-    type: pdf_pcb_print
+    type: pcb_print
     dir: pdf/
     options:
-      output_name: '%p_PCB_Bottom.pdf'
-    layers:
-      - layer: B.Cu
-      - layer: B.SilkS
-      - layer: Edge.Cuts
+      output: '%p_PCB_Bottom.pdf'
+      format: 'PDF'
+      pages:
+      - layers:
+          - layer: "B.Cu"
+            description: "Bottom Copper Layer"
+            color: "#00FF00FF"  # Example color with alpha
+          - layer: "B.SilkS"
+            description: "Bottom Silkscreen Layer"
+            color: "#FFFFFF"    # Example color
+          - layer: "Edge.Cuts"
+            description: "Edge Cuts Layer"
+            color: "#000000FF"  # Example color with alpha
+        scaling: 1.0
+        sort_layers: true
 
   # Exports PDF print of back assembly layers (for fab house)
   - name: 'pdf_asm_drawing_back'
     comment: "Print Back Assembly Drawing"
-    type: pdf_pcb_print
+    type: pcb_print
     dir: fab/draw
     options:
       output_name: '%p_assembly_Bottom.pdf'
-    layers:
-      - layer: B.Fab
-      - layer: B.CrtYd
-      - layer: Edge.Cuts
-      - layer: User.Drawings
-      - layer: User.Comments
+      pages:
+      - layers:
+          - layer: "B.Fab"
+          - layer: "B.CrtYd"
+          - layer: "Edge.Cuts"
+          - layer: User.Drawings
+          - layer: User.Comments
+        scaling: 1.0
+        sort_layers: true
 
   # Exports PDF print of front assembly layers (for fab house)
   - name: 'pdf_asm_drawing_front'
     comment: "Print Front Assembly Drawing"
-    type: pdf_pcb_print
+    type: pcb_print
     dir: fab/draw
     options:
       output_name: '%p_assembly_Front.pdf'
-    layers:
-      - layer: F.Fab
-      - layer: F.CrtYd
-      - layer: Edge.Cuts
-      - layer: User.Drawings
-      - layer: User.Comments
+      pages:
+      - layers:
+          - layer: "F.Fab"
+          - layer: "F.CrtYd"
+          - layer: "Edge.Cuts"
+          - layer: User.Drawings
+          - layer: User.Comments
+        scaling: 1.0
+        sort_layers: true
 
   # Exports gerbers 
   - name: 'gerbers'
@@ -114,12 +140,12 @@ outputs:
     dir: fab/pcb/gerber
 
   # Exports gencad file (used by some vendors' PNP lines)
-  - name: 'gencad'
-    comment: "Exports GenCAD 1.4 file"
-    type: gencad
-    dir: fab/asm/gencad
-    options:
-      output: '%p_gencad.%x'
+  #- name: 'gencad'
+  # comment: "Exports GenCAD 1.4 file"
+  # type: gencad
+  # dir: fab/asm/gencad
+  # options:
+  #   output: '%p_gencad.%x'
 
   # Exports pick-and-place file 
   - name: 'pnp'
@@ -127,15 +153,8 @@ outputs:
     type: position
     dir: fab/asm/pnp
     options:
+      format: 'CSV'
       output: '%i_%p.csv'
-
-  # Exports interactive HTML bom
-  #  - name: 'ibom'
-  #    comment: "Generate Interactive HTML BOM"
-  #    type: ibom
-  #    dir: fab/asm/bom
-  #    options:
-  #      output: 'bom_interactive_%p.html'
 
   # Exports individual BOM
   - name: 'bom_ind'
@@ -190,7 +209,7 @@ outputs:
         - from_output: bom_col
         - from_output: bom_ind
         - from_output: pnp
-        - from_output: gencad
+        #- from_output: gencad
         - from_output: gerbers
         - from_output: drill
         - from_output: pdf_asm_drawing_front
