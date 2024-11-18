@@ -211,7 +211,8 @@ outputs:
         - from_output: pnp
         #- from_output: gencad
         - from_output: gerbers
-        - from_output: drill
+        - from_output: drill_gerber
+        - from_output: drill_excellon
         - from_output: pdf_asm_drawing_front
         - from_output: pdf_asm_drawing_back
 
@@ -224,5 +225,6 @@ outputs:
       output: 'fabpack_%p_bareboard_%D_%T.zip'
       files: 
         - from_output: gerbers
-        - from_output: drill
+        - from_output: drill_excellon
+        - from_output: drill_gerber
 
