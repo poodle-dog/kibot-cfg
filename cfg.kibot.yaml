@@ -169,24 +169,18 @@ outputs:
     dir: fab/asm/bom
     options:
       output: 'bom_indiv_%p.csv'
+      ignore_dnf: false
       group_fields: ['Reference']
       columns:  
-        - field: 'References'
-          name: 'RefDes'
-        - field: 'Value'
-          name: 'Value'
-        - field: 'Pop'
-          name: 'Pop'
-        - field: 'Mfg'
-          name: 'Mfg'
-        - field: 'MfgPN'
-          name: 'MfgPN'
-        - field: 'Dist'
-          name: 'Dist'
-        - field: 'DistPN'
-          name: 'DistPN'
-        - field: 'Footprint'
-          name: 'Footprint'
+        - field: References
+          name: RefDes
+        - Value
+        - Pop
+        - Mfg
+        - MfgPN
+        - Dist
+        - DistPN
+        - Footprint
       csv:
         hide_pcb_info: true
         hide_stats_info: true
