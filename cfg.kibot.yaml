@@ -133,11 +133,17 @@ outputs:
       - layer: Edge.Cuts
         suffix: Edge_Cuts
 
-  # Exports drill files 
-  - name: 'drill'
-    comment: "Generate drill files"
+  # Exports drill files in gerber format
+  - name: 'drill_gerber'
+    comment: "Generate drill files in gerber format"
     type: gerb_drill
-    dir: fab/pcb/gerber
+    dir: fab/pcb/drill
+
+  # Exports drill files in excellon format
+  - name: 'drill_excellon'
+    comment: "Generate drill files in excellon format"
+    type: excellon
+    dir: fab/pcb/drill
 
   # Exports gencad file (used by some vendors' PNP lines)
   #- name: 'gencad'
